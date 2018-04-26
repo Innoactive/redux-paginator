@@ -1,5 +1,5 @@
 import { createPaginator } from './createPaginator'
-import paginatorMiddleware from './paginatorMiddleware'
+import createPaginatorMiddleware from './paginatorMiddleware'
 import { requestPageWatcher } from './sagas'
 import {
   getCurrentPageNumber,
@@ -11,7 +11,7 @@ import {
 
 export {
   createPaginator,
-  paginatorMiddleware,
+  createPaginatorMiddleware,
   requestPageWatcher,
   getCurrentPageNumber,
   getCurrentPageResults,

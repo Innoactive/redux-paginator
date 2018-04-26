@@ -6,9 +6,10 @@ import {
 } from './agent'
 
 
-const paginatorMiddleware = ({ dispatch }) => next => action => {
-  if (action.type == REQUEST_PAGE) {
-    const {
+const createPaginatorMiddleware = (useCache = false) => {
+  return ({ dispatch }) => next => action => {
+    if (action.type == REQUEST_PAGE) {
+      const {
       meta: {
         endpoint,
         name,
@@ -18,46 +19,47 @@ const paginatorMiddleware = ({ dispatch }) => next => action => {
         pageArgName,
         idKey
       },
-      payload: {
+        payload: {
         page,
-        params
+          params
       }
     } = action
-    dispatch(dispatch => {
-      try {
-        fetchPage(endpoint, pageArgName, page, params)
-          .then(res => {
-            const { response, [FROM_CACHE_FLAG]: fromCache } = res
-            let results, count
+      dispatch(dispatch => {
+        try {
+          fetchPage(endpoint, pageArgName, page, params, useCache)
+            .then(res => {
+              const { response, [FROM_CACHE_FLAG]: fromCache } = res
+              let results, count
 
-            if (typeof resultsKey == 'undefined') {
-              results = response
-            }
-            else {
-              results = response[resultsKey]
-              count = response[countKey]
-            }
-            dispatch(receivePage(
-              endpoint,
-              name,
-              initialItem,
-              pageArgName,
-              idKey,
-              page,
-              params,
-              results,
-              count,
-              res,
-              !(typeof fromCache == 'undefined')
-            ))
-          })
-      }
-      catch (err) {
-        // TODO
-      }
-    })
+              if (typeof resultsKey == 'undefined') {
+                results = response
+              }
+              else {
+                results = response[resultsKey]
+                count = response[countKey]
+              }
+              dispatch(receivePage(
+                endpoint,
+                name,
+                initialItem,
+                pageArgName,
+                idKey,
+                page,
+                params,
+                results,
+                count,
+                res,
+                !(typeof fromCache == 'undefined')
+              ))
+            })
+        }
+        catch (err) {
+          // TODO
+        }
+      })
+    }
+    return next(action)
   }
-  return next(action)
 }
 
-export default paginatorMiddleware
+export default createPaginatorMiddleware

@@ -43,12 +43,17 @@ export const buildSuffix = (pageArgName, page, params) => {
   }, { encode: false }).replace(startString, '')
 }
 
-export const fetchPage = (endpoint, pageArgName, page, params) => {
+export const fetchPage = (endpoint, pageArgName, page, params, useCache) => {
   const suffix = buildSuffix(pageArgName, page, params)
   const url = endpoint + suffix
   const hash = hashUrl(url)
   let fromCache = true
-  let promise = _promises[hash]
+  let promise;
+  if (!useCache) {
+    promise = undefined;
+  } else {
+    promise = _promises[hash];
+  }
   if (typeof promise == 'undefined') {
     fromCache = false
     promise = new Promise((resolve, reject) =>
