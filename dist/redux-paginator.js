@@ -1090,8 +1090,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	var getCurrentPageResults = exports.getCurrentPageResults = function getCurrentPageResults(items, pagination, name) {
+	  var results = [];
 	  var currentPage = pagination.pages[pagination.currentPages[name]];
-	  return typeof currentPage == 'undefined' ? [] : Object.values((0, _lodash2["default"])(items || [], currentPage.ids));
+	  if (typeof currentPage == 'undefined') return results;
+	  currentPage.ids.forEach(function (id) {
+	    results.push(items[id]);
+	  });
+	  return results;
 	};
 
 	var getAllResults = exports.getAllResults = function getAllResults(items, pagination, name) {

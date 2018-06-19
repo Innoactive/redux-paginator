@@ -6,8 +6,13 @@ export const getCurrentPageNumber = (pagination, name) => {
 }
 
 export const getCurrentPageResults = (items, pagination, name) => {
+  let results = []  
   const currentPage = pagination.pages[pagination.currentPages[name]]
-  return typeof currentPage == 'undefined' ? [] : Object.values(pick(items || [], currentPage.ids))
+  if (typeof currentPage == 'undefined') return results;
+  currentPage.ids.forEach(function(id) {
+    results.push(items[id])
+  });
+  return results;
 }
 
 export const getAllResults = (items, pagination, name) => {
